@@ -1,8 +1,6 @@
-import React from 'react';
-
 export default function ScoreTable({ criteria, totalScore1, totalScore2 }) {
   return (
-    <div className="rounded-lg border border-slate-200 bg-slate-50 shadow-sm dark:border-slate-700 dark:bg-slate-900/60">
+    <div className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50 shadow-sm dark:border-slate-700 dark:bg-slate-900/60">
       <table className="min-w-full text-left text-sm">
         <thead>
           <tr className="border-b border-slate-200 dark:border-slate-700">
