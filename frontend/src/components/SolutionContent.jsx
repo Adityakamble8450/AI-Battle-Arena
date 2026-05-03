@@ -20,15 +20,16 @@ hljs.registerLanguage('shell', bash);
 
 function parseResponse(response) {
   const blocks = [];
+  const normalizedResponse = response.replace(/\r\n/g, '\n');
   const fencePattern = /```([\w-]+)?\n([\s\S]*?)```/g;
   let lastIndex = 0;
-  let match = fencePattern.exec(response);
+  let match = fencePattern.exec(normalizedResponse);
 
   while (match) {
     if (match.index > lastIndex) {
       blocks.push({
         type: 'text',
-        content: response.slice(lastIndex, match.index).trim(),
+        content: normalizedResponse.slice(lastIndex, match.index).trim(),
       });
     }
 
@@ -45,7 +46,7 @@ function parseResponse(response) {
   if (lastIndex < response.length) {
     blocks.push({
       type: 'text',
-      content: response.slice(lastIndex).trim(),
+      content: normalizedResponse.slice(lastIndex).trim(),
     });
   }
 
@@ -64,24 +65,30 @@ export default function SolutionContent({ response, title }) {
   }, [blocks]);
 
   return (
-    <div ref={containerRef} className="flex flex-1 flex-col gap-3 overflow-y-auto p-4 md:max-h-[28rem]">
+    <div ref={containerRef} className="flex flex-1 flex-col gap-4 overflow-y-auto p-4 md:max-h-[32rem]">
       {blocks.map((block, index) =>
         block.type === 'text' ? (
           <div
             key={`${title}-text-${index}`}
-            className="solution-copy whitespace-pre-wrap break-words text-sm leading-7 text-slate-700 dark:text-slate-200"
+            className="solution-copy whitespace-pre-wrap break-words text-sm leading-7 text-slate-700 dark:text-white/88"
           >
             {block.content}
           </div>
         ) : (
-          <pre
+          <div
             key={`${title}-code-${index}`}
-            className="solution-code overflow-x-auto rounded-xl border border-slate-200 bg-slate-950 px-4 py-3 text-sm leading-6 dark:border-slate-700"
+            className="overflow-hidden rounded-2xl border border-slate-200 bg-slate-950 dark:border-white/10"
           >
-            <code className={block.language ? `language-${block.language}` : undefined}>
-              {block.content}
-            </code>
-          </pre>
+            <div className="flex items-center justify-between border-b border-white/10 bg-black/70 px-4 py-2 text-[11px] uppercase tracking-[0.22em] text-white/45">
+              <span>{block.language || 'code'}</span>
+              <span>formatted</span>
+            </div>
+            <pre className="solution-code overflow-x-auto px-4 py-4 text-[13px] leading-6 text-slate-100">
+              <code className={block.language ? `language-${block.language}` : undefined}>
+                {block.content}
+              </code>
+            </pre>
+          </div>
         ),
       )}
     </div>

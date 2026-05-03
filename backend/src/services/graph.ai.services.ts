@@ -11,7 +11,17 @@ import type { GraphNode } from "@langchain/langgraph";
 import { z } from "zod";
 import { geminiModel, mistralModel, cohereModel } from "./models.services.js";
 import { createAgent , providerStrategy } from "langchain";
+import { SystemMessage } from "@langchain/core/messages";
  
+const solutionSystemPrompt = `You are a helpful coding assistant taking part in an AI battle.
+
+Rules:
+- Answer the user's request directly.
+- If the user asks for code, always include at least one complete working solution.
+- Put code inside fenced markdown blocks using the correct language tag, for example \`\`\`js.
+- Do not describe code without showing the actual code when the request is for implementation.
+- Keep the explanation concise and place it before or after the code.
+- Return plain markdown only.`;
 
 const State = new StateSchema({
   messages: MessagesValue,
@@ -65,9 +75,18 @@ const solutionNode: GraphNode<typeof State> = async (state: typeof State.State) 
     throw new Error("No input message provided to solutionNode");
   }
 
+  const promptText =
+    typeof firstMessage.text === "string" ? firstMessage.text : String(firstMessage.text ?? "");
+
   const [mistralResponse, cohereResponse] = await Promise.all([
-    mistralModel.invoke([firstMessage]),
-    cohereModel.invoke([firstMessage]),
+    mistralModel.invoke([
+      new SystemMessage(solutionSystemPrompt),
+      new HumanMessage(promptText),
+    ]),
+    cohereModel.invoke([
+      new SystemMessage(solutionSystemPrompt),
+      new HumanMessage(promptText),
+    ]),
   ]);
 
   return {
@@ -147,5 +166,4 @@ export default async function runGraph(usermessage: string) {
     winner: result.winner,
   };
 }
-
 
