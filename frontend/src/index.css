@@ -32,6 +32,10 @@
 }
 
 @layer components {
+  .animate-pulse {
+    animation: skeleton-pulse 1.8s ease-in-out infinite;
+  }
+
   .solution-copy p {
     margin: 0;
   }
@@ -50,5 +54,16 @@
 
   .solution-copy {
     overflow-wrap: anywhere;
+  }
+}
+
+@keyframes skeleton-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+
+  50% {
+    opacity: 1;
   }
 }

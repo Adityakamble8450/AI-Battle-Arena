@@ -3,6 +3,8 @@ import Header from './components/Header';
 import PromptInput from './components/PromptInput';
 import ModelCard from './components/ModelCard';
 import JudgePanel from './components/JudgePanel';
+import ModelCardSkeleton from './components/ModelCardSkeleton';
+import JudgePanelSkeleton from './components/JudgePanelSkeleton';
 
 const JUDGE_CRITERIA = [
   { name: 'Accuracy' },
@@ -127,16 +129,39 @@ function App() {
                     </div>
                   </div>
 
-                  {isLoading && (
-                    <div className="rounded-[28px] border border-slate-200 bg-white px-5 py-4 text-sm text-slate-500 shadow-sm dark:border-white/10 dark:bg-neutral-950 dark:text-white/70">
-                      Comparing responses and preparing the judge summary...
-                    </div>
-                  )}
-
                   {errorMessage && !isLoading && (
                     <div className="rounded-[28px] border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700 shadow-sm dark:border-red-500/30 dark:bg-red-950/40 dark:text-red-100">
                       {errorMessage}
                     </div>
+                  )}
+
+                  {isLoading && (
+                    <>
+                      <div className="rounded-[32px] border border-slate-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-neutral-950">
+                        <div className="mb-3 flex items-center justify-between">
+                          <div>
+                            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-white/45">
+                              Arena Output
+                            </p>
+                            <p className="mt-1 text-sm text-slate-600 dark:text-white/65">
+                              Comparing responses and preparing the judge summary...
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_40px_minmax(0,1fr)] md:items-stretch">
+                          <ModelCardSkeleton title="Model 1" />
+
+                          <div className="flex items-center justify-center py-1 text-xs font-semibold uppercase tracking-[0.22em] text-slate-400 dark:text-white/30">
+                            VS
+                          </div>
+
+                          <ModelCardSkeleton title="Model 2" />
+                        </div>
+                      </div>
+
+                      <JudgePanelSkeleton />
+                    </>
                   )}
 
                   {!isLoading && battleResults?.model1 && battleResults?.model2 && (
