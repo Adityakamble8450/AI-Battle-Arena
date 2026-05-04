@@ -9,7 +9,7 @@ import {
 import { HumanMessage } from "langchain";
 import type { GraphNode } from "@langchain/langgraph";
 import { z } from "zod";
-import { geminiModel, mistralModel, cohereModel } from "./models.services.js";
+import { geminiModel, mistralModel, groqModel } from "./models.services.js";
 import { createAgent , providerStrategy } from "langchain";
 import { SystemMessage } from "@langchain/core/messages";
  
@@ -78,12 +78,12 @@ const solutionNode: GraphNode<typeof State> = async (state: typeof State.State) 
   const promptText =
     typeof firstMessage.text === "string" ? firstMessage.text : String(firstMessage.text ?? "");
 
-  const [mistralResponse, cohereResponse] = await Promise.all([
+  const [mistralResponse, groqResponse] = await Promise.all([
     mistralModel.invoke([
       new SystemMessage(solutionSystemPrompt),
       new HumanMessage(promptText),
     ]),
-    cohereModel.invoke([
+    groqModel.invoke([
       new SystemMessage(solutionSystemPrompt),
       new HumanMessage(promptText),
     ]),
@@ -91,15 +91,16 @@ const solutionNode: GraphNode<typeof State> = async (state: typeof State.State) 
 
   return {
     solution_1: mistralResponse.text,
-    solution_2: cohereResponse.text,
+    solution_2: groqResponse.text,
   };
 };
 
 const judgeNode: GraphNode<typeof State> = async (state: typeof State.State) => {
   // console.log("Invoking judgeNode with state:", state);
   const { solution_1, solution_2 } = state;
+  const firstMessage = state.messages[0];
 
-  if (!solution_1 || !solution_2) {
+  if (!firstMessage || !solution_1 || !solution_2) {
     throw new Error("Solutions not available for judging");
   }
 
@@ -118,7 +119,7 @@ const judgeNode: GraphNode<typeof State> = async (state: typeof State.State) => 
 
   const judgeResponse = await judge.invoke({
     messages : [
-      new HumanMessage(`you are a judge tasked with evaluating two solutions to the following problem: ${state.messages[0].text}. Solution 1 is: ${solution_1}. Solution 2 is: ${solution_2}. Please evaluate both solutions and provide a score between 0 and 10 for each, along with a recommendation on which solution is better.`)
+      new HumanMessage(`you are a judge tasked with evaluating two solutions to the following problem: ${firstMessage.text}. Solution 1 is: ${solution_1}. Solution 2 is: ${solution_2}. Please evaluate both solutions and provide a score between 0 and 10 for each, along with a recommendation on which solution is better.`)
     ]
   });
 
@@ -166,4 +167,3 @@ export default async function runGraph(usermessage: string) {
     winner: result.winner,
   };
 }
-

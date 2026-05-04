@@ -1,6 +1,7 @@
 import { ChatGoogle } from "@langchain/google";
 import { ChatMistralAI  } from "@langchain/mistralai";
-import { ChatCohere } from "@langchain/cohere";
+// import { ChatCohere } from "@langchain/cohere";
+import { ChatGroq } from "@langchain/groq";
 import configuration from "../config/config.js";
 
 
@@ -14,8 +15,13 @@ export const mistralModel = new ChatMistralAI({
     apiKey: configuration.MISTRAL_API_KEY
 })
 
-export const cohereModel = new ChatCohere({
-    model: "command-a-03-2025",
-    apiKey: configuration.COHERE_API_KEY
+// export const cohereModel = new ChatCohere({
+//     model: "command-a-03-2025",
+//     apiKey: configuration.COHERE_API_KEY
+// })
+
+export const groqModel = new ChatGroq({
+    model: "llama-3.3-70b-versatile",
+    apiKey: configuration.GROQ_API_KEY
 })
 

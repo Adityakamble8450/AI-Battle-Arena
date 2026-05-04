@@ -1,5 +1,5 @@
-import { Trophy } from 'lucide-react';
-import SkeletonBlock from './SkeletonBlock';
+import { Trophy } from "lucide-react";
+import SkeletonBlock from "./SkeletonBlock";
 
 export default function JudgePanelSkeleton() {
   return (
@@ -9,7 +9,9 @@ export default function JudgePanelSkeleton() {
           <Trophy size={18} />
         </div>
         <div>
-          <h2 className="text-base font-semibold text-slate-900 dark:text-white">AI Judge</h2>
+          <h2 className="text-base font-semibold text-slate-900 dark:text-white">
+            AI Judge
+          </h2>
           <p className="text-sm text-slate-500 dark:text-white/45">
             Side-by-side scoring and final recommendation.
           </p>
@@ -25,7 +27,10 @@ export default function JudgePanelSkeleton() {
           </div>
           <div className="space-y-4 px-4 py-4">
             {Array.from({ length: 3 }).map((_, index) => (
-              <div key={index} className="grid grid-cols-[1.4fr_0.6fr_0.6fr] gap-4">
+              <div
+                key={index}
+                className="grid grid-cols-[1.4fr_0.6fr_0.6fr] gap-4"
+              >
                 <SkeletonBlock className="h-4 w-24" />
                 <SkeletonBlock className="ml-auto h-4 w-10" />
                 <SkeletonBlock className="ml-auto h-4 w-10" />

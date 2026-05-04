@@ -40,6 +40,14 @@
     margin: 0;
   }
 
+  .solution-markdown > :first-child {
+    margin-top: 0;
+  }
+
+  .solution-markdown > :last-child {
+    margin-bottom: 0;
+  }
+
   .solution-code .hljs {
     background: transparent;
     color: inherit;
@@ -48,11 +56,12 @@
 
   .solution-code code {
     display: block;
-    min-width: max-content;
+    min-width: 100%;
     font-family: Consolas, "SFMono-Regular", Monaco, Menlo, monospace;
   }
 
-  .solution-copy {
+  .solution-copy,
+  .solution-markdown {
     overflow-wrap: anywhere;
   }
 }
